@@ -6,4 +6,4 @@ install:
   - "pip install -e .[test]"
 
 script:
-  - "nosetests --with-doctest && flake8"
+  - "nosetests --with-doctest && flake8 za_parliament_scrapers"
