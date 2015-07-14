@@ -68,7 +68,7 @@ setup(
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'dev': [''],
+        'dev': ['nose', 'flake8'],
         'test': ['nose', 'flake8'],
     },
 )

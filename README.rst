@@ -6,12 +6,28 @@ This is a collection of scrapers for working with data from the
 
 1. Scrapers for handling Questions and Replies documents
 
+Credit
+------
+
+Most of the Question and Replies scraping was taken from https://github.com/mysociety/za-hansard.
+
 Installation
 ------------
 
 Install using::
 
     pip install za-parliament-scrapers
+
+Development
+-----------
+
+Clone the repo and setup for local development::
+
+    pip install -e .[dev]
+
+To run tests::
+
+    nosetest --with-doctest && flake8 za_parliament_scrapers
 
 License
 -------
