@@ -1,0 +1,2 @@
+include LICENSE README.rst
+recursive-include za_parliament_scrapers *.py
