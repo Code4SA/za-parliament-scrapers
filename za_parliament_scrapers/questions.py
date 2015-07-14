@@ -171,3 +171,9 @@ class QuestionAnswerScraper(object):
             questions.append(match_dict)
 
         return questions
+
+    def extract_answer_from_html(self, html):
+        """ Extract the answer portion from a chunk of HTML
+        """
+        # TODO: implement
+        return html
