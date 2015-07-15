@@ -3,6 +3,7 @@ import re
 import datetime
 
 import mammoth
+import bs4
 
 
 def strip_dict(d):
@@ -41,6 +42,8 @@ class QuestionAnswerScraper(object):
           (?:(?P<identifier>(?P<house>[NC])(?P<answer_type>[WO])(?P<id_number>\d+)E)|\n|$) # Number 2
         """,
         re.UNICODE | re.VERBOSE | re.DOTALL)
+
+    REPLY_RE = re.compile(r'^reply:?', re.IGNORECASE | re.MULTILINE)
 
     def details_from_name(self, name):
         """ Return a map with details from the document name:
@@ -185,12 +188,6 @@ class QuestionAnswerScraper(object):
 
         return questions
 
-    def extract_answer_from_html(self, html):
-        """ Extract the answer portion from a chunk of HTML
-        """
-        # TODO: implement
-        return html
-
     def correct_minister_title(self, minister_title):
         corrections = {
             "Minister President of the Republic":
@@ -325,3 +322,28 @@ class QuestionAnswerScraper(object):
         minister_title = corrections.get(minister_title, minister_title)
 
         return minister_title
+
+    def extract_answer_from_html(self, html):
+        """ Extract the answer portion from a chunk of HTML
+
+        We look for a P tag with text of 'REPLY' and return strip everything before that.
+        """
+        if html.strip().startswith('<'):
+            soup = bs4.BeautifulSoup(html, 'html.parser')
+
+            for p in soup.find_all('p'):
+                if self.REPLY_RE.match(p.text):
+                    for el in list(p.previous_elements):
+                        if isinstance(el, bs4.element.Tag):
+                            el.decompose()
+                    p.decompose()
+                    break
+
+            return unicode(soup)
+        else:
+            # plain text
+            match = self.REPLY_RE.search(html)
+            if match:
+                return html[match.end(0):]
+
+        return html
