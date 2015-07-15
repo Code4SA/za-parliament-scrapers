@@ -16,7 +16,7 @@ class QuestionAnswerScraperTest(unittest.TestCase):
             'date': datetime.date(2013, 11, 27),
             'house': 'N',
             'oral_number': None,
-            'type': None,
+            'type': 'W',
             'written_number': '1143',
             'year': 2013,
         })

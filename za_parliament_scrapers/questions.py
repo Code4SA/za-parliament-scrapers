@@ -23,13 +23,13 @@ class QuestionAnswerScraper(object):
     """ Parses answer documents from parliament.
     """
 
-    DOCUMENT_NAME_REGEX = re.compile(r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>\d{6})(\.(?P<type>\w+))?$')
+    DOCUMENT_NAME_REGEX = re.compile(r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>\d{6})$')
     BAR_REGEX = re.compile(r'^_+$', re.MULTILINE)
 
     QUESTION_RE = re.compile(
         ur"""
           (?P<intro>
-            (?P<number1>\d+)\.?\s+              # Question number
+            (?:(?P<number1>\d+)\.?\s+)?         # Question number
             [-a-zA-z]+\s+(?P<askedby>[-\w\s]+?) # Name of question asker, dropping the title
             \s*\((?P<party>[-\w\s]+)\)?
             \s+to\s+ask\s+the\s+
@@ -38,7 +38,7 @@ class QuestionAnswerScraper(object):
           )                                     # Intro
           (?P<translated>\u2020)?\s*(</b>|\n)\s*
           (?P<question>.*?)\s*                  # The question itself.
-          (?P<identifier>(?P<house>[NC])(?P<answer_type>[WO])(?P<id_number>\d+)E) # Number 2
+          (?:(?P<identifier>(?P<house>[NC])(?P<answer_type>[WO])(?P<id_number>\d+)E)|\n|$) # Number 2
         """,
         re.UNICODE | re.VERBOSE | re.DOTALL)
 
@@ -69,6 +69,13 @@ class QuestionAnswerScraper(object):
             document_data['president_number'] = document_data.pop('oral_number')
         if president == 'DP':
             document_data['deputy_president_number'] = document_data.pop('oral_number')
+
+        if document_data.get('oral_number'):
+            document_data['type'] = 'O'
+        elif document_data.get('written_number'):
+            document_data['type'] = 'W'
+        else:
+            document_data['type'] = None
 
         date = document_data.pop('date_string')
         try:
@@ -139,6 +146,12 @@ class QuestionAnswerScraper(object):
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
         (u'1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning', u'1875', u'G G Hill-Lewis', u'DA', u'Minister in the Presidency', None, u'</b>', u'Test question?', u'NW2224E', u'N', u'W', u'2224')
+
+        # Check we cope without a question number
+        >>> qn = u'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs: </b>Whether he has an immediate plan to assist?'
+        >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
+        >>> match.groups()
+        (u'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs:', None, u'AM Matlhoko', u'EFF', u'Minister of Cooperative Governance and Traditional Affairs', None, u'</b>', u'Whether he has an immediate plan to assist?', None, None, None, None)
         """
         questions = []
 
@@ -157,8 +170,6 @@ class QuestionAnswerScraper(object):
                     match_dict[u'oral_number'] = number1
             elif answer_type == 'W':
                 match_dict[u'written_number'] = number1
-            else:
-                raise ValueError('Invalid answer type: %s' % answer_type)
 
             match_dict[u'translated'] = bool(match_dict[u'translated'])
             match_dict[u'questionto'] = match_dict[u'questionto'].replace(':', '')
