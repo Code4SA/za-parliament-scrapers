@@ -31,7 +31,7 @@ class QuestionAnswerScraper(object):
         ur"""
           (?P<intro>
             (?:(?P<number1>\d+)\.?\s+)?         # Question number
-            [-a-zA-z]+\s+(?P<askedby>[-\w\s]+?) # Name of question asker, dropping the title
+            (?P<askedby>[-\w\s]+?)              # Name of question asker
             \s*\((?P<party>[-\w\s]+)\)?
             \s+to\s+ask\s+the\s+
             (?P<questionto>[-\w\s(),:.]+)[:.]
@@ -124,37 +124,37 @@ class QuestionAnswerScraper(object):
         >>> qn = u'144. Mr D B Feldman (COPE-Gauteng) to ask the Minister of Defence and Military Veterans: </b>Whether the deployment of the SA National Defence Force soldiers to the Central African Republic and the Democratic Republic of Congo is in line with our international policy with regard to (a) upholding international peace, (b) the promotion of constitutional democracy and (c) the respect for parliamentary democracy; if not, why not; if so, what are the (i) policies which underpin South African foreign policy and (ii) further relevant details? CW187E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'144. Mr D B Feldman (COPE-Gauteng) to ask the Minister of Defence and Military Veterans:', u'144', u'D B Feldman', u'COPE-Gauteng', u'Minister of Defence and Military Veterans', None, u'</b>', u'Whether the deployment of the SA National Defence Force soldiers to the Central African Republic and the Democratic Republic of Congo is in line with our international policy with regard to (a) upholding international peace, (b) the promotion of constitutional democracy and (c) the respect for parliamentary democracy; if not, why not; if so, what are the (i) policies which underpin South African foreign policy and (ii) further relevant details?', u'CW187E', u'C', u'W', u'187')
+        (u'144. Mr D B Feldman (COPE-Gauteng) to ask the Minister of Defence and Military Veterans:', u'144', u'Mr D B Feldman', u'COPE-Gauteng', u'Minister of Defence and Military Veterans', None, u'</b>', u'Whether the deployment of the SA National Defence Force soldiers to the Central African Republic and the Democratic Republic of Congo is in line with our international policy with regard to (a) upholding international peace, (b) the promotion of constitutional democracy and (c) the respect for parliamentary democracy; if not, why not; if so, what are the (i) policies which underpin South African foreign policy and (ii) further relevant details?', u'CW187E', u'C', u'W', u'187')
 
         # Shows the need for \u2013 (en-dash) and / (in the date) in latter part of the intro
         >>> qn = u'409. Mr M J R de Villiers (DA-WC) to ask the Minister of Public Works: [215] (Interdepartmental transfer \u2013 01/11) </b>(a) What were the reasons for a cut back on the allocation for the Expanded Public Works Programme to municipalities in the 2013-14 financial year and (b) what effect will this have on (i) job creation and (ii) service delivery? CW603E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'409. Mr M J R de Villiers (DA-WC) to ask the Minister of Public Works: [215] (Interdepartmental transfer \u2013 01/11)', u'409', u'M J R de Villiers', u'DA-WC', u'Minister of Public Works', None, u'</b>', u'(a) What were the reasons for a cut back on the allocation for the Expanded Public Works Programme to municipalities in the 2013-14 financial year and (b) what effect will this have on (i) job creation and (ii) service delivery?', u'CW603E', u'C', u'W', u'603')
+        (u'409. Mr M J R de Villiers (DA-WC) to ask the Minister of Public Works: [215] (Interdepartmental transfer \u2013 01/11)', u'409', u'Mr M J R de Villiers', u'DA-WC', u'Minister of Public Works', None, u'</b>', u'(a) What were the reasons for a cut back on the allocation for the Expanded Public Works Programme to municipalities in the 2013-14 financial year and (b) what effect will this have on (i) job creation and (ii) service delivery?', u'CW603E', u'C', u'W', u'603')
 
         # Cope with missing close bracket
         >>> qn = u'1517. Mr W P Doman (DA to ask the Minister of Cooperative Governance and Traditional Affairs:</b> Which approximately 31 municipalities experienced service delivery protests as referred to in his reply to oral question 57 on 10 September 2009? NW1922E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'1517. Mr W P Doman (DA to ask the Minister of Cooperative Governance and Traditional Affairs:', u'1517', u'W P Doman', u'DA', u'Minister of Cooperative Governance and Traditional Affairs', None, u'</b>', u'Which approximately 31 municipalities experienced service delivery protests as referred to in his reply to oral question 57 on 10 September 2009?', u'NW1922E', u'N', u'W', u'1922')
+        (u'1517. Mr W P Doman (DA to ask the Minister of Cooperative Governance and Traditional Affairs:', u'1517', u'Mr W P Doman', u'DA', u'Minister of Cooperative Governance and Traditional Affairs', None, u'</b>', u'Which approximately 31 municipalities experienced service delivery protests as referred to in his reply to oral question 57 on 10 September 2009?', u'NW1922E', u'N', u'W', u'1922')
 
         # Check we cope with no space before party in parentheses
         >>> qn = u'1569. Mr M Swart(DA) to ask the Minister of Finance: </b>Test question? NW1975E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'1569. Mr M Swart(DA) to ask the Minister of Finance:', u'1569', u'M Swart', u'DA', u'Minister of Finance', None, u'</b>', u'Test question?', u'NW1975E', u'N', u'W', u'1975')
+        (u'1569. Mr M Swart(DA) to ask the Minister of Finance:', u'1569', u'Mr M Swart', u'DA', u'Minister of Finance', None, u'</b>', u'Test question?', u'NW1975E', u'N', u'W', u'1975')
 
         # Check we cope with a dot after the askee instead of a colon.
         >>> qn = u'1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning </b>Test question? NW2224E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning', u'1875', u'G G Hill-Lewis', u'DA', u'Minister in the Presidency', None, u'</b>', u'Test question?', u'NW2224E', u'N', u'W', u'2224')
+        (u'1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning', u'1875', u'Mr G G Hill-Lewis', u'DA', u'Minister in the Presidency', None, u'</b>', u'Test question?', u'NW2224E', u'N', u'W', u'2224')
 
         # Check we cope without a question number
         >>> qn = u'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs: </b>Whether he has an immediate plan to assist?'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs:', None, u'AM Matlhoko', u'EFF', u'Minister of Cooperative Governance and Traditional Affairs', None, u'</b>', u'Whether he has an immediate plan to assist?', None, None, None, None)
+        (u'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs:', None, u'Mr AM Matlhoko', u'EFF', u'Minister of Cooperative Governance and Traditional Affairs', None, u'</b>', u'Whether he has an immediate plan to assist?', None, None, None, None)
         """
         questions = []
 
@@ -176,12 +176,6 @@ class QuestionAnswerScraper(object):
 
             match_dict[u'translated'] = bool(match_dict[u'translated'])
             match_dict[u'questionto'] = match_dict[u'questionto'].replace(':', '')
-
-            # Party isn't actually stored in the question, so drop it before saving
-            # Perhaps we can eventually use it to make sure we have the right person.
-            # (and to tidy up the missing parenthesis.)
-            match_dict.pop(u'party')
-
             match_dict['questionto'] = self.correct_minister_title(match_dict['questionto'])
 
             questions.append(match_dict)
