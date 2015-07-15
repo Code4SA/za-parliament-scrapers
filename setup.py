@@ -60,7 +60,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'mammoth >= 0.3.18'
+        'mammoth >= 0.3.19'
     ],
 
     # List additional groups of dependencies here (e.g. development
