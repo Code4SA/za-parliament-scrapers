@@ -179,6 +179,8 @@ class QuestionAnswerScraper(object):
             # (and to tidy up the missing parenthesis.)
             match_dict.pop(u'party')
 
+            match_dict['questionto'] = self.correct_minister_title(match_dict['questionto'])
+
             questions.append(match_dict)
 
         return questions
@@ -188,3 +190,138 @@ class QuestionAnswerScraper(object):
         """
         # TODO: implement
         return html
+
+    def correct_minister_title(self, minister_title):
+        corrections = {
+            "Minister President of the Republic":
+                "President of the Republic",
+            "Minister in The Presidency National Planning Commission":
+                "Minister in the Presidency: National Planning Commission",
+            "Minister in the Presidency National Planning Commission":
+                "Minister in the Presidency: National Planning Commission",
+            "Questions asked to the Minister in The Presidency National Planning Commission":
+                "Minister in the Presidency: National Planning Commission",
+            "Minister in the Presidency. National Planning Commission":
+                "Minister in the Presidency: National Planning Commission",
+            "Minister in The Presidency": "Minister in the Presidency",
+            "Minister in The Presidency Performance Monitoring and Evaluation as well as Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the Presidency Performance , Monitoring and Evaluation as well as Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the Presidency Performance Management and Evaluation as well as Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the Presidency Performance Monitoring and Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the Presidency Performance Monitoring and Evaluation as well Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the Presidency Performance Monitoring and Evaluation as well as Administration":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the Presidency Performance Monitoring and Evaluation as well as Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the Presidency, Performance Monitoring and Evaluation as well as Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister in the PresidencyPerformance Monitoring and Evaluation as well as Administration in the Presidency":
+                "Minister in the Presidency: Performance Monitoring and Evaluation as well as Administration in the in the Presidency",
+            "Minister of Women in The Presidency":
+                "Minister of Women in the Presidency",
+            "Minister of Agriculture, Fisheries and Forestry":
+                "Minister of Agriculture, Forestry and Fisheries",
+            "Minister of Minister of Agriculture, Forestry and Fisheries":
+                "Minister of Agriculture, Forestry and Fisheries",
+            "Minister of Agriculture, Foresty and Fisheries":
+                "Minister of Agriculture, Forestry and Fisheries",
+            "Minister of Minister of Basic Education":
+                "Minister of Basic Education",
+            "Minister of Basic Transport":
+                "Minister of Transport",
+            "Minister of Communication":
+                "Minister of Communications",
+            "Minister of Cooperative Government and Traditional Affairs":
+                "Minister of Cooperative Governance and Traditional Affairs",
+            "Minister of Defence and MilitaryVeterans":
+                "Minister of Defence and Military Veterans",
+            "Minister of Heath":
+                "Minister of Health",
+            "Minister of Higher Education":
+                "Minister of Higher Education and Training",
+            "Minister of Minister of International Relations and Cooperation":
+                "Minister of International Relations and Cooperation",
+            "Minister of Justice and Constitutional development":
+                "Minister of Justice and Constitutional Development",
+            "Minister of Justice and Constitutional Developoment":
+                "Minister of Justice and Constitutional Development",
+            "Minister of Mining":
+                "Minister of Mineral Resources",
+            "Minister of Public Enterprise":
+                "Minister of Public Enterprises",
+            "Minister of the Public Service and Administration":
+                "Minister of Public Service and Administration",
+            "Minister of Public Work":
+                "Minister of Public Works",
+            "Minister of Rural Development and Land Affairs":
+                "Minister of Rural Development and Land Reform",
+            "Minister of Minister of Rural Development and Land Reform":
+                "Minister of Rural Development and Land Reform",
+            "Minister of Rural Development and Land Reform Question":
+                "Minister of Rural Development and Land Reform",
+            "Minister of Rural Development and Land Reforms":
+                "Minister of Rural Development and Land Reform",
+            "Minister of Rural Development and Land reform":
+                "Minister of Rural Development and Land Reform",
+            "Minister of Sport and Recreaton":
+                "Minister of Sport and Recreation",
+            "Minister of Sports and Recreation":
+                "Minister of Sport and Recreation",
+            "Minister of Water and Enviromental Affairs":
+                "Minister of Water and Environmental Affairs",
+            "Minister of Women, Children andPeople with Disabilities":
+                "Minister of Women, Children and People with Disabilities",
+            "Minister of Women, Children en People with Disabilities":
+                "Minister of Women, Children and People with Disabilities",
+            "Minister of Women, Children and Persons with Disabilities":
+                "Minister of Women, Children and People with Disabilities",
+            "Minister of Women, Youth, Children and People with Disabilities":
+                "Minister of Women, Children and People with Disabilities",
+            "Higher Education and Training":
+                "Minister of Higher Education and Training",
+            "Minister Basic Education":
+                "Minister of Basic Education",
+            "Minister Health":
+                "Minister of Health",
+            "Minister Labour":
+                "Minister of Labour",
+            "Minister Public Enterprises":
+                "Minister of Public Enterprises",
+            "Minister Rural Development and Land Reform":
+                "Minister of Rural Development and Land Reform",
+            "Minister Science and Technology":
+                "Minister of Science and Technology",
+            "Minister Social Development":
+                "Minister of Social Development",
+            "Minister Trade and Industry":
+                "Minister of Trade and Industry",
+            "Minister in Communications":
+                "Minister of Communications",
+            "Minister of Arts and Culture 102. Mr D J Stubbe (DA) to ask the Minister of Arts and Culture":
+                "Minister of Arts and Culture",
+        }
+
+        # the most common error is the inclusion of a hyphen (presumably due to
+        # line breaks in the original document). No ministers have a hyphen in
+        # their title so we can do a simple replace.
+        minister_title = minister_title.replace('-', '')
+
+        # correct mispellings of 'minister'
+        minister_title = minister_title.replace('Minster', 'Minister')
+
+        # it is also common for a minister to be labelled "minister for" instead
+        # of "minister of"
+        minister_title = minister_title.replace('Minister for', 'Minister of')
+
+        # remove any whitespace
+        minister_title = minister_title.strip()
+
+        # apply manual corrections
+        minister_title = corrections.get(minister_title, minister_title)
+
+        return minister_title
