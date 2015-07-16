@@ -12,7 +12,7 @@ class QuestionAnswerScraperTest(unittest.TestCase):
 
     def test_simple(self):
         assert_equal(self.scraper.details_from_name("RNW1143-131127"), {
-            'code': 'RNW1143-131127',
+            'code': 'NW1143',
             'date': datetime.date(2013, 11, 27),
             'house': 'N',
             'oral_number': None,

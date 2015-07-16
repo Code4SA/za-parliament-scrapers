@@ -63,7 +63,9 @@ class QuestionAnswerScraper(object):
             raise ValueError("bad document name %s" % name)
         document_data = match.groupdict()
 
-        document_data['code'] = os.path.splitext(name)[0]
+        code = os.path.splitext(name)[0].split('-', 1)[0]
+        # remove starting 'R'
+        document_data['code'] = code[1:]
 
         # The President and vice Deputy President have their own
         # oral question sequences.
