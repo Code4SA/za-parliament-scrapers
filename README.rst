@@ -1,6 +1,12 @@
 za-parliament-scrapers
 ======================
 
+.. image:: https://badge.fury.io/py/za-parliament-scrapers.svg
+    :target: http://badge.fury.io/py/za-parliament-scrapers
+
+.. image:: https://travis-ci.org/Code4SA/za-parliament-scrapers.svg
+    :target: http://travis-ci.org/Code4SA/za-parliament-scrapers
+
 This is a collection of scrapers for working with data from the
 `Parliament of South Africa <http://www.parliament.gov.za/>`_. It includes:
 
