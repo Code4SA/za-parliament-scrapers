@@ -1,0 +1,15 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+nose = "*"
+flake8 = "*"
+coverage = "*"
+
+[packages]
+za-parliament-scrapers = {editable = true,path = "."}
+
+[requires]
+python_version = "2.7"
