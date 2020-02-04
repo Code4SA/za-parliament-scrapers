@@ -62,7 +62,6 @@ setup(
     install_requires=[
         'mammoth >= 0.3.19',
         'beautifulsoup4 >= 4.4.0',
-        'future',
     ],
 
     # List additional groups of dependencies here (e.g. development

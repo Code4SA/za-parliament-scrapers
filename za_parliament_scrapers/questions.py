@@ -1,5 +1,3 @@
-from builtins import str
-from builtins import object
 import os
 import re
 import datetime
@@ -19,7 +17,7 @@ def strip_dict(d):
     >>> sorted(result.items())
     [('a', 'foo'), ('b', 3), ('c', 'bar')]
     """
-    return dict((k, v.strip() if hasattr(v, 'strip') else v) for k, v in d.items())
+    return dict((k, v.strip() if hasattr(v, 'strip') else v) for k, v in d.iteritems())
 
 
 class QuestionAnswerScraper(object):
@@ -337,7 +335,7 @@ class QuestionAnswerScraper(object):
                     p.decompose()
                     break
 
-            return str(soup)
+            return unicode(soup)
         else:
             # plain text
             match = self.REPLY_RE.search(html)
