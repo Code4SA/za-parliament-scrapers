@@ -15,7 +15,7 @@ def strip_dict(d):
     >>> d = {'a': ' foo   ', 'b': 3, 'c': '   bar'}
     >>> result = strip_dict(d)
     >>> type(result)
-    <type 'dict'>
+    <class 'dict'>
     >>> sorted(result.items())
     [('a', 'foo'), ('b', 3), ('c', 'bar')]
     """
@@ -30,7 +30,7 @@ class QuestionAnswerScraper(object):
     BAR_REGEX = re.compile(r'^_+$', re.MULTILINE)
 
     QUESTION_RE = re.compile(
-        ur"""
+        r"""
           (?P<intro>
             (?:(?P<number1>\d+)\.?\s+)?         # Question number
             (?P<askedby>[-\w\s]+?)              # Name of question asker
@@ -125,61 +125,61 @@ class QuestionAnswerScraper(object):
         # Checks for QUESTION_RE
 
         # Shows the need for - in the party
-        >>> qn = u'144. Mr D B Feldman (COPE-Gauteng) to ask the Minister of Defence and Military Veterans: </b>Whether the deployment of the SA National Defence Force soldiers to the Central African Republic and the Democratic Republic of Congo is in line with our international policy with regard to (a) upholding international peace, (b) the promotion of constitutional democracy and (c) the respect for parliamentary democracy; if not, why not; if so, what are the (i) policies which underpin South African foreign policy and (ii) further relevant details? CW187E'
+        >>> qn = '144. Mr D B Feldman (COPE-Gauteng) to ask the Minister of Defence and Military Veterans: </b>Whether the deployment of the SA National Defence Force soldiers to the Central African Republic and the Democratic Republic of Congo is in line with our international policy with regard to (a) upholding international peace, (b) the promotion of constitutional democracy and (c) the respect for parliamentary democracy; if not, why not; if so, what are the (i) policies which underpin South African foreign policy and (ii) further relevant details? CW187E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'144. Mr D B Feldman (COPE-Gauteng) to ask the Minister of Defence and Military Veterans:', u'144', u'Mr D B Feldman', u'COPE-Gauteng', u'Minister of Defence and Military Veterans', None, u'</b>', u'Whether the deployment of the SA National Defence Force soldiers to the Central African Republic and the Democratic Republic of Congo is in line with our international policy with regard to (a) upholding international peace, (b) the promotion of constitutional democracy and (c) the respect for parliamentary democracy; if not, why not; if so, what are the (i) policies which underpin South African foreign policy and (ii) further relevant details?', u'CW187E', u'C', u'W', u'187')
+        ('144. Mr D B Feldman (COPE-Gauteng) to ask the Minister of Defence and Military Veterans:', '144', 'Mr D B Feldman', 'COPE-Gauteng', 'Minister of Defence and Military Veterans', None, '</b>', 'Whether the deployment of the SA National Defence Force soldiers to the Central African Republic and the Democratic Republic of Congo is in line with our international policy with regard to (a) upholding international peace, (b) the promotion of constitutional democracy and (c) the respect for parliamentary democracy; if not, why not; if so, what are the (i) policies which underpin South African foreign policy and (ii) further relevant details?', 'CW187E', 'C', 'W', '187')
 
         # Shows the need for \u2013 (en-dash) and / (in the date) in latter part of the intro
-        >>> qn = u'409. Mr M J R de Villiers (DA-WC) to ask the Minister of Public Works: [215] (Interdepartmental transfer \u2013 01/11) </b>(a) What were the reasons for a cut back on the allocation for the Expanded Public Works Programme to municipalities in the 2013-14 financial year and (b) what effect will this have on (i) job creation and (ii) service delivery? CW603E'
+        >>> qn = '409. Mr M J R de Villiers (DA-WC) to ask the Minister of Public Works: [215] (Interdepartmental transfer \u2013 01/11) </b>(a) What were the reasons for a cut back on the allocation for the Expanded Public Works Programme to municipalities in the 2013-14 financial year and (b) what effect will this have on (i) job creation and (ii) service delivery? CW603E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'409. Mr M J R de Villiers (DA-WC) to ask the Minister of Public Works: [215] (Interdepartmental transfer \u2013 01/11)', u'409', u'Mr M J R de Villiers', u'DA-WC', u'Minister of Public Works', None, u'</b>', u'(a) What were the reasons for a cut back on the allocation for the Expanded Public Works Programme to municipalities in the 2013-14 financial year and (b) what effect will this have on (i) job creation and (ii) service delivery?', u'CW603E', u'C', u'W', u'603')
+        ('409. Mr M J R de Villiers (DA-WC) to ask the Minister of Public Works: [215] (Interdepartmental transfer \u2013 01/11)', '409', 'Mr M J R de Villiers', 'DA-WC', 'Minister of Public Works', None, '</b>', '(a) What were the reasons for a cut back on the allocation for the Expanded Public Works Programme to municipalities in the 2013-14 financial year and (b) what effect will this have on (i) job creation and (ii) service delivery?', 'CW603E', 'C', 'W', '603')
 
         # Cope with missing close bracket
-        >>> qn = u'1517. Mr W P Doman (DA to ask the Minister of Cooperative Governance and Traditional Affairs:</b> Which approximately 31 municipalities experienced service delivery protests as referred to in his reply to oral question 57 on 10 September 2009? NW1922E'
+        >>> qn = '1517. Mr W P Doman (DA to ask the Minister of Cooperative Governance and Traditional Affairs:</b> Which approximately 31 municipalities experienced service delivery protests as referred to in his reply to oral question 57 on 10 September 2009? NW1922E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'1517. Mr W P Doman (DA to ask the Minister of Cooperative Governance and Traditional Affairs:', u'1517', u'Mr W P Doman', u'DA', u'Minister of Cooperative Governance and Traditional Affairs', None, u'</b>', u'Which approximately 31 municipalities experienced service delivery protests as referred to in his reply to oral question 57 on 10 September 2009?', u'NW1922E', u'N', u'W', u'1922')
+        ('1517. Mr W P Doman (DA to ask the Minister of Cooperative Governance and Traditional Affairs:', '1517', 'Mr W P Doman', 'DA', 'Minister of Cooperative Governance and Traditional Affairs', None, '</b>', 'Which approximately 31 municipalities experienced service delivery protests as referred to in his reply to oral question 57 on 10 September 2009?', 'NW1922E', 'N', 'W', '1922')
 
         # Check we cope with no space before party in parentheses
-        >>> qn = u'1569. Mr M Swart(DA) to ask the Minister of Finance: </b>Test question? NW1975E'
+        >>> qn = '1569. Mr M Swart(DA) to ask the Minister of Finance: </b>Test question? NW1975E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'1569. Mr M Swart(DA) to ask the Minister of Finance:', u'1569', u'Mr M Swart', u'DA', u'Minister of Finance', None, u'</b>', u'Test question?', u'NW1975E', u'N', u'W', u'1975')
+        ('1569. Mr M Swart(DA) to ask the Minister of Finance:', '1569', 'Mr M Swart', 'DA', 'Minister of Finance', None, '</b>', 'Test question?', 'NW1975E', 'N', 'W', '1975')
 
         # Check we cope with a dot after the askee instead of a colon.
-        >>> qn = u'1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning </b>Test question? NW2224E'
+        >>> qn = '1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning </b>Test question? NW2224E'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning', u'1875', u'Mr G G Hill-Lewis', u'DA', u'Minister in the Presidency', None, u'</b>', u'Test question?', u'NW2224E', u'N', u'W', u'2224')
+        ('1875. Mr G G Hill-Lewis (DA) to ask the Minister in the Presidency. National Planning', '1875', 'Mr G G Hill-Lewis', 'DA', 'Minister in the Presidency', None, '</b>', 'Test question?', 'NW2224E', 'N', 'W', '2224')
 
         # Check we cope without a question number
-        >>> qn = u'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs: </b>Whether he has an immediate plan to assist?'
+        >>> qn = 'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs: </b>Whether he has an immediate plan to assist?'
         >>> match = QuestionAnswerScraper.QUESTION_RE.match(qn)
         >>> match.groups()
-        (u'Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs:', None, u'Mr AM Matlhoko', u'EFF', u'Minister of Cooperative Governance and Traditional Affairs', None, u'</b>', u'Whether he has an immediate plan to assist?', None, None, None, None)
+        ('Mr AM Matlhoko (EFF) to ask the Minister of Cooperative Governance and Traditional Affairs:', None, 'Mr AM Matlhoko', 'EFF', 'Minister of Cooperative Governance and Traditional Affairs', None, '</b>', 'Whether he has an immediate plan to assist?', None, None, None, None)
         """
         questions = []
 
         for match in self.QUESTION_RE.finditer(text):
             match_dict = match.groupdict()
 
-            answer_type = match_dict[u'answer_type']
+            answer_type = match_dict['answer_type']
             number1 = match_dict.pop('number1')
 
             if answer_type == 'O':
                 if re.search('(?i)to ask the Deputy President', match_dict['intro']):
-                    match_dict[u'dp_number'] = number1
+                    match_dict['dp_number'] = number1
                 elif re.search('(?i)to ask the President', match_dict['intro']):
-                    match_dict[u'president_number'] = number1
+                    match_dict['president_number'] = number1
                 else:
-                    match_dict[u'oral_number'] = number1
+                    match_dict['oral_number'] = number1
             elif answer_type == 'W':
-                match_dict[u'written_number'] = number1
+                match_dict['written_number'] = number1
 
-            match_dict[u'translated'] = bool(match_dict[u'translated'])
-            match_dict[u'questionto'] = match_dict[u'questionto'].replace(':', '')
+            match_dict['translated'] = bool(match_dict['translated'])
+            match_dict['questionto'] = match_dict['questionto'].replace(':', '')
             match_dict['questionto'] = self.correct_minister_title(match_dict['questionto'])
 
             questions.append(match_dict)
