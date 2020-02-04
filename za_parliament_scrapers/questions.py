@@ -87,7 +87,7 @@ class QuestionAnswerScraper(object):
         date = document_data.pop('date_string')
         try:
             document_data['date'] = datetime.datetime.strptime(date, '%y%m%d').date()
-        except:
+        except Exception:
             raise ValueError("problem converting date %s" % date)
         document_data['year'] = document_data['date'].year
 
