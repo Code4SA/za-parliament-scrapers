@@ -60,7 +60,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'mammoth >= 0.3.19',
+        'mammoth >= 0.3.19, < 0.3.31',
         'beautifulsoup4 >= 4.4.0',
     ],
 
