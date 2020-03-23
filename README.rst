@@ -33,7 +33,7 @@ Clone the repo and setup for local development::
 
 To run tests::
 
-    nosetest --with-doctest && flake8 za_parliament_scrapers
+    nosetests --with-doctest && flake8 za_parliament_scrapers
 
 License
 -------
