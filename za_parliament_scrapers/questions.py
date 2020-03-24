@@ -62,7 +62,13 @@ class QuestionAnswerScraper(object):
         """
         match = self.DOCUMENT_NAME_REGEX.match(name)
         if not match:
-            raise ValueError("bad document name %s" % name)
+            r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>\d{6})$'
+            message = (
+                ("Bad document name '%s'. " % name) +
+                "Document name needs to be in the form: 'R<house><O or W><number>-<last two digits of year><two-digit month><two-digit day>'. " +
+                "For example, 'RNW1143-131127.docx' or 'RNW190-200303.docx'."
+            )
+            raise ValueError(message)
         document_data = match.groupdict()
 
         code = os.path.splitext(name)[0].split('-', 1)[0]
