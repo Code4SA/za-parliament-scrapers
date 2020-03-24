@@ -10,7 +10,7 @@ class QuestionAnswerScraperTest(unittest.TestCase):
     def setUp(self):
         self.scraper = QuestionAnswerScraper()
 
-    def test_valid_document_name(self):
+    def test_valid_document_name_old_date_format(self):
         assert_equal(self.scraper.details_from_name("RNW1143-131127"), {
             'code': 'NW1143',
             'date': datetime.date(2013, 11, 27),
@@ -21,8 +21,16 @@ class QuestionAnswerScraperTest(unittest.TestCase):
             'year': 2013,
         })
 
-    def test_invalid_document_name(self):
-        self.assertRaises(ValueError, self.scraper.details_from_name, 'RNW104-2020-02-28')
+    def test_valid_document_name_new_date_format(self):
+        assert_equal(self.scraper.details_from_name("RNW1143-2020-11-27"), {
+            'code': 'NW1143',
+            'date': datetime.date(2020, 11, 27),
+            'house': 'N',
+            'oral_number': None,
+            'type': 'W',
+            'written_number': '1143',
+            'year': 2020,
+        })
 
     def test_extract_from_document(self):
         text, html = self.scraper.extract_content_from_document("tests/fixtures/RNW126-150302.docx")
