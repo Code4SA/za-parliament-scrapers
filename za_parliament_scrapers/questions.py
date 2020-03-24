@@ -33,7 +33,7 @@ class QuestionAnswerScraper(object):
         r"""
           (?P<intro>
             (?:(?P<number1>\d+)\.?\s+)?         # Question number
-            (?P<askedby>[-\w\s]+?)              # Name of question asker
+            (?P<askedby>[-a-zA-Z\s]+?)          # Name of question asker
             \s*\((?P<party>[-\w\s]+)\)?
             \s+(?:to\s+ask|asked)\s+the\s+
             (?P<questionto>[-\w\s(),:.]+)[:.]
