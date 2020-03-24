@@ -26,7 +26,7 @@ class QuestionAnswerScraper(object):
     """ Parses answer documents from parliament.
     """
 
-    DOCUMENT_NAME_REGEX = re.compile(r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>\d{6})$')
+    DOCUMENT_NAME_REGEX = re.compile(r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>(\d{6}|\d{4}-\d{2}-\d{2}))$')
     BAR_REGEX = re.compile(r'^_+$', re.MULTILINE)
 
     QUESTION_RE = re.compile(
@@ -94,7 +94,10 @@ class QuestionAnswerScraper(object):
         try:
             document_data['date'] = datetime.datetime.strptime(date, '%y%m%d').date()
         except Exception:
-            raise ValueError("problem converting date %s" % date)
+            try:
+                document_data['date'] = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+            except Exception:
+                raise ValueError("problem converting date %s" % date)
         document_data['year'] = document_data['date'].year
 
         document_data = strip_dict(document_data)
