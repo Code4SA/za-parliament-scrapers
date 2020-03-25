@@ -26,16 +26,16 @@ class QuestionAnswerScraper(object):
     """ Parses answer documents from parliament.
     """
 
-    DOCUMENT_NAME_REGEX = re.compile(r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>\d{6})$')
+    DOCUMENT_NAME_REGEX = re.compile(r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>(\d{6}|\d{4}-\d{2}-\d{2}))$')
     BAR_REGEX = re.compile(r'^_+$', re.MULTILINE)
 
     QUESTION_RE = re.compile(
         r"""
           (?P<intro>
-            (?:(?P<number1>\d+)\.?\s+)?         # Question number
-            (?P<askedby>[-\w\s]+?)              # Name of question asker
+            (?:(?P<number1>\d+)\.?[ \t]?)?      # Question number
+            (?P<askedby>[a-zA-Z]+[-a-zA-Z ]+?)  # Name of question asker
             \s*\((?P<party>[-\w\s]+)\)?
-            \s+to\s+ask\s+the\s+
+            \s+(?:to\s+ask|asked)\s+the\s+
             (?P<questionto>[-\w\s(),:.]+)[:.]
             [-\u2013\w\s(),\[\]/]*?
           )                                     # Intro
@@ -62,7 +62,15 @@ class QuestionAnswerScraper(object):
         """
         match = self.DOCUMENT_NAME_REGEX.match(name)
         if not match:
-            raise ValueError("bad document name %s" % name)
+            r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>\d{6})$'
+            message = "Bad document name '%s'. " % name
+            message += (
+                "Document name needs to be in the form: 'R<house><O or W><number>-<date>. "
+                "The date must either be in the format <last two digits of year><two-digit month><two-digit day>' (e.g. 200104) or "
+                "<four-digit year>-<two-digit month>-<two-digit day>' (e.g. 2020-01-04). "
+                "For example, 'RNW1143-131127.docx' or 'RNW190-2020-03-03.docx'."
+            )
+            raise ValueError(message)
         document_data = match.groupdict()
 
         code = os.path.splitext(name)[0].split('-', 1)[0]
@@ -88,7 +96,10 @@ class QuestionAnswerScraper(object):
         try:
             document_data['date'] = datetime.datetime.strptime(date, '%y%m%d').date()
         except Exception:
-            raise ValueError("problem converting date %s" % date)
+            try:
+                document_data['date'] = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+            except Exception:
+                raise ValueError("problem converting date %s" % date)
         document_data['year'] = document_data['date'].year
 
         document_data = strip_dict(document_data)

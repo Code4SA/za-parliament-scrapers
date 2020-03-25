@@ -10,7 +10,7 @@ class QuestionAnswerScraperTest(unittest.TestCase):
     def setUp(self):
         self.scraper = QuestionAnswerScraper()
 
-    def test_simple(self):
+    def test_valid_document_name_old_date_format(self):
         assert_equal(self.scraper.details_from_name("RNW1143-131127"), {
             'code': 'NW1143',
             'date': datetime.date(2013, 11, 27),
@@ -19,6 +19,17 @@ class QuestionAnswerScraperTest(unittest.TestCase):
             'type': 'W',
             'written_number': '1143',
             'year': 2013,
+        })
+
+    def test_valid_document_name_new_date_format(self):
+        assert_equal(self.scraper.details_from_name("RNW1143-2020-11-27"), {
+            'code': 'NW1143',
+            'date': datetime.date(2020, 11, 27),
+            'house': 'N',
+            'oral_number': None,
+            'type': 'W',
+            'written_number': '1143',
+            'year': 2020,
         })
 
     def test_extract_from_document(self):
@@ -37,3 +48,30 @@ class QuestionAnswerScraperTest(unittest.TestCase):
     def test_extract_answer_from_text(self):
         out = self.scraper.extract_answer_from_html('\n36/1/4/1/201500013\nNATIONAL ASSEMBLY\nFOR WRITTEN REPLY\nQUESTION 161\nDATE OF PUBLICATION IN INTERNAL QUESTION PAPER: 12 FEBRUARY 2015 \n(INTERNAL QUESTION PAPER NO 1-2015)\n161. Ms D Kohler (DA) to ask the Minister of Police:\n(a) How many SA Police Service officers in each province currently do not have firearm (i) licenses or (ii) competency certificates and (b) of these, how many still carry firearms?\nNW168E\nREPLY:\n(a) Members of the SAPS, for the purposes of reporting, are categorized under Operational, Support and Management where operational members were first prioritized to obtain their firearm competency. The statistics on 9 February 2015 as per the Training Administration System (TAS) of the SAPS per Province who have not completed the prescribed training are as follows:\n\n\n\n\nPROVINCE\n\n\nTOTAL OPERATIONAL MEMBERS PER PROVINCE\n\n\nNOT COMPLETED\n\n\n% NOT COMPLETED\n\n\n\n\xa0\n\xa0\n\xa0\n\xa0\n\n\n\nWESTERN CAPE\n\n\n15 096\n\n\n872\n\n\n5.78%\n\n\n\n\nEASTERN CAPE\n\n\n15 186\n\n\n988\n\n\n6.51%\n\n\n\n\nNORTHERN CAPE\n\n\n5 215\n\n\n481\n\n\n9.22%\n\n\n\n\nFREE STATE\n\n\n9 404\n\n\n968\n\n\n10.29%\n\n\n\n\nKWAZULU-NATAL\n\n\n18 646\n\n\n406\n\n\n2.18%\n\n\n\n\nNORTH WEST\n\n\n7 522\n\n\n1 040\n\n\n13.83%\n\n\n\n\nMPUMALANGA\n\n\n7 510\n\n\n1 250\n\n\n16.64%\n\n\n\n\nLIMPOPO\n\n\n9 643\n\n\n971\n\n\n10.07%\n\n\n\n\nGAUTENG\n\n\n25 764\n\n\n2 352\n\n\n9.13%\n\n\n\n\nTOTAL\n\n\n113 986\n\n\n9 328\n\n\n8.18%\n\n\n\n\nFrom the 9 328 members, 2 609 are competent in the use of a handgun, 3 182 in the use of a rifle, 4 197 in the use of a shotgun and 4 191 in legal principles.\n(b) 5 728 Members of the 9 328 members who have not completed the prescribed training, according to the TAS system, have been issued with a firearm on their personal inventory.\n')
         assert_equal('\n(a) Members of the SAPS, for the purposes of reporting, are categorized under Operational, Support and Management where operational members were first prioritized to obtain their firearm competency. The statistics on 9 February 2015 as per the Training Administration System (TAS) of the SAPS per Province who have not completed the prescribed training are as follows:\n\n\n\n\nPROVINCE\n\n\nTOTAL OPERATIONAL MEMBERS PER PROVINCE\n\n\nNOT COMPLETED\n\n\n% NOT COMPLETED\n\n\n\n\xa0\n\xa0\n\xa0\n\xa0\n\n\n\nWESTERN CAPE\n\n\n15 096\n\n\n872\n\n\n5.78%\n\n\n\n\nEASTERN CAPE\n\n\n15 186\n\n\n988\n\n\n6.51%\n\n\n\n\nNORTHERN CAPE\n\n\n5 215\n\n\n481\n\n\n9.22%\n\n\n\n\nFREE STATE\n\n\n9 404\n\n\n968\n\n\n10.29%\n\n\n\n\nKWAZULU-NATAL\n\n\n18 646\n\n\n406\n\n\n2.18%\n\n\n\n\nNORTH WEST\n\n\n7 522\n\n\n1 040\n\n\n13.83%\n\n\n\n\nMPUMALANGA\n\n\n7 510\n\n\n1 250\n\n\n16.64%\n\n\n\n\nLIMPOPO\n\n\n9 643\n\n\n971\n\n\n10.07%\n\n\n\n\nGAUTENG\n\n\n25 764\n\n\n2 352\n\n\n9.13%\n\n\n\n\nTOTAL\n\n\n113 986\n\n\n9 328\n\n\n8.18%\n\n\n\n\nFrom the 9 328 members, 2 609 are competent in the use of a handgun, 3 182 in the use of a rifle, 4 197 in the use of a shotgun and 4 191 in legal principles.\n(b) 5 728 Members of the 9 328 members who have not completed the prescribed training, according to the TAS system, have been issued with a firearm on their personal inventory.\n', out)
+
+    def test_extract_questions_from_text_old_format(self):
+        text = '36/1/4/1/201500010\n\nNATIONAL ASSEMBLY\n\n\n\nFOR WRITTEN REPLY\n\n\n\nQUESTION 126\n\n\n\nDATE OF PUBLICATION IN INTERNAL QUESTION PAPER: 12 FEBRUARY 2015 \n\n(INTERNAL QUESTION PAPER NO 1-2015)\n\n\n\n126. Ms D Kohler (DA) to ask the Minister of Police:\n\nWith reference to the reply to question 228 on 18 March 2014, (a) how much discontinued ammunition is still in circulation in the SA Police Service in each province and (b) what action is to be taken to remove this ammunition from use?\n\nNW131E\n\nREPLY:\n\nTotal discontinued ammunition still in circulation in the SA Police Service:\n\n\n\nPROVINCE\n\nPREVIOUS QUANTITY\n\nCURRENT QUANTITY\n\nWestern Cape\n\n68,542\n\n74,627\n\nEastern Cape\n\n538,937\n\n594,806\n\nNorthern Cape\n\n104,459\n\n38,326\n\nFree State\n\n410,981\n\n135,065\n\nKwaZulu-Natal\n\n523,978\n\n228,164\n\nNorth West\n\n233,850\n\n24,120\n\nMpumalanga\n\n296,479\n\n92,676\n\nLimpopo\n\n35,080\n\n10,446\n\nGauteng\n\n71,764\n\n63,209\n\nHead Office Divisions\n\n2,061,456\n\n1,704,286\n\nTOTAL:  \n\n4,345,526\n\n2,965,725\n\nThis ammunition may only be used for training purposes. However, this ammunition is still in use by Specialized Units within the SAPS for training, ballistic testing of firearms and IBIS test firing purposes. \n\nAn instruction to withdraw all such ammunition was issued from the Divisional Commissioner, Supply Chain Management on 12 September 2006, which also instructed that such ammunition may not be issued any longer as from this date.\n\nRecently another instruction in regard was issued by the Divisional Commissioner, Supply Chain Management to all Provisional Commissioners and Divisional Commissioners to immediately withdraw all non-standard, obsolete and unserviceable ammunition not in use, from their respective provinces and divisions.\n\nAll non-standard, obsolete and unserviceable ammunition is being sent on a continuous basis to the Ammunition Store at the Division Supply Chain Management for disposal and this is being monitored to ensure compliance.\n\n\n\n\n\n\n\n\n\n'
+        questions = self.scraper.extract_questions_from_text(text)
+        assert_equal(1, len(questions))
+        assert_equal('Ms D Kohler', questions[0]['askedby'])
+        assert_equal('Minister of Police', questions[0]['questionto'])
+        assert_equal('126. Ms D Kohler (DA) to ask the Minister of Police:', questions[0]['intro'])
+        assert_equal('With reference to the reply to question 228 on 18 March 2014, (a) how much discontinued ammunition is still in circulation in the SA Police Service in each province and (b) what action is to be taken to remove this ammunition from use?', questions[0]['question'])
+
+    def test_extract_questions_from_text_old_format_without_number_before_asker_name(self):
+        text = '\n\n\n\n\n\n\n\n\n\nNATIONAL ASSEMBLY\n\n\n\n\n\nQUESTION FOR WRITTEN REPLY\n\n\n\nQUESTION NO: 190\n\n\n\nDATE OF PUBLICATION:   21 FEBRUARY 2020\n\n\n\nINTERNAL QUESTION PAPER:   2 OF 2020\n\n\n\nMr S Ngcobo (DA) to ask the Minister in The Presidency for Women, Youth and Persons with Disabilities:\n\n\n\nWhether her Office has initiated the drafting of a Bill that seeks to protect and promote the rights of persons with disabilities; if not, (a) why not and (b) what steps does her Office intend taking in this regard; if so, on what date does she envisage that the Bill will be introduced in the National Assembly?\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 NW211E\n\n\n\n\n\nREPLY\n\n\n\nYes\n\n\n\n(b) The Department is in the process of preparing the drafting of a Bill which will be submitted to Cabinet for approval before it will be tabled in Parliament during the 2021/2022 financial year.\n\n\n\n\n\n\n\n'
+        questions = self.scraper.extract_questions_from_text(text)
+        assert_equal(1, len(questions))
+        assert_equal('Mr S Ngcobo', questions[0]['askedby'])
+        assert_equal('Minister in The Presidency for Women, Youth and Persons with Disabilities', questions[0]['questionto'])
+        assert_equal('Mr S Ngcobo (DA) to ask the Minister in The Presidency for Women, Youth and Persons with Disabilities:', questions[0]['intro'])
+        assert_equal('Whether her Office has initiated the drafting of a Bill that seeks to protect and promote the rights of persons with disabilities; if not, (a) why not and (b) what steps does her Office intend taking in this regard; if so, on what date does she envisage that the Bill will be introduced in the National Assembly?', questions[0]['question'])
+
+    def test_extract_questions_from_text_new_format(self):
+        text= '\n\n\n\n\n\n\n\n\n\n\n\nMINISTRY \n\nPUBLIC WORKS & INFRASTRUCTURE\n\nREPUBLIC OF SOUTH AFRICA \n\n\n\nDepartment of Public Works l Central Government Offices l 256 Madiba Street l Pretoria l Contact: +27 (0)12 406 2034 l +27 (0)12 406 1224\n\nPrivate Bag X9155 l CAPE TOWN, 8001 l RSA 4th Floor Parliament Building l 120 Plain Street l CAPE TOWN l Tel: +27 21 468 6900 Fax: +27 21 462 4592\n\n www.publicworks.gov.za \n\n\n\nNATIONAL ASSEMBLY\n\n\n\nWRITTEN REPLY\n\n\n\nQUESTION NUMBER:        104 [NW116E]\n\nINTERNAL QUESTION PAPER NO.:01\n\nDATE OF PUBLICATION:        13 FEBRUARY 2020\n\nDATE OF REPLY:           28 FEBRUARY 2020\n\n\n\n104. Ms S J Graham (DA) asked the Minister of Public Works and Infrastructure:\n\nWhat is the number of residential properties owned by her department in the Lephalale Local Municipality which are vacant?NW116E\n\n______________________________________________________________________\n\n\n\nREPLY:\n\n\n\nThe Minister of Public Works and Infrastructure: \n\nThe Department of Public Works and Infrastructure (DPWI) has informed me that in the Lephalale Local Municipality the Department owns (i) 183 residential properties (ii) one business erven (iii) 132 government buildings and (iv) 5 agricultural properties.  DPWI informed me that (aa) 8 land parcels are vacant and (bb) only one property is unutilised. \n\n\n\n(cc)  DPWI has not earmarked any properties for disposal in the Lephalale Local Municipality.\n\n\n\nIn August 2019 the Department started a Government Debt Project engaging directly with municipalities and Eskom to verify and reconcile accounts and the project. DPWI, on behalf of client departments, owed the Lephalale Local Municipality, as per accounts received on 17 February 2020, R 334,989.69 which relates current consumption. \n\n'
+        questions = self.scraper.extract_questions_from_text(text)
+        assert_equal(1, len(questions))
+        assert_equal('Ms S J Graham', questions[0]['askedby'])
+        assert_equal('104. Ms S J Graham (DA) asked the Minister of Public Works and Infrastructure:', questions[0]['intro'])
+        assert_equal('Minister of Public Works and Infrastructure', questions[0]['questionto'])
+        assert_equal('What is the number of residential properties owned by her department in the Lephalale Local Municipality which are vacant?', questions[0]['question'])
