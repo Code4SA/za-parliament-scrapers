@@ -55,6 +55,7 @@ class QuestionAnswerScraperTest(unittest.TestCase):
         assert_equal(1, len(questions))
         assert_equal('Ms D Kohler', questions[0]['askedby'])
         assert_equal('Minister of Police', questions[0]['questionto'])
+        assert_equal('Ms D Kohler (DA) to ask the Minister of Police:', questions[0]['intro'])
         assert_equal('With reference to the reply to question 228 on 18 March 2014, (a) how much discontinued ammunition is still in circulation in the SA Police Service in each province and (b) what action is to be taken to remove this ammunition from use?', questions[0]['question'])
 
     def test_extract_questions_from_text_old_format_without_number_before_asker_name(self):
@@ -63,6 +64,7 @@ class QuestionAnswerScraperTest(unittest.TestCase):
         assert_equal(1, len(questions))
         assert_equal('Mr S Ngcobo', questions[0]['askedby'])
         assert_equal('Minister in The Presidency for Women, Youth and Persons with Disabilities', questions[0]['questionto'])
+        assert_equal('Mr S Ngcobo (DA) to ask the Minister in The Presidency for Women, Youth and Persons with Disabilities:', questions[0]['intro'])
         assert_equal('Whether her Office has initiated the drafting of a Bill that seeks to protect and promote the rights of persons with disabilities; if not, (a) why not and (b) what steps does her Office intend taking in this regard; if so, on what date does she envisage that the Bill will be introduced in the National Assembly?', questions[0]['question'])
 
     def test_extract_questions_from_text_new_format(self):
@@ -70,5 +72,6 @@ class QuestionAnswerScraperTest(unittest.TestCase):
         questions = self.scraper.extract_questions_from_text(text)
         assert_equal(1, len(questions))
         assert_equal('Ms S J Graham', questions[0]['askedby'])
+        assert_equal('Ms S J Graham (DA) asked the Minister of Public Works and Infrastructure:', questions[0]['intro'])
         assert_equal('Minister of Public Works and Infrastructure', questions[0]['questionto'])
         assert_equal('What is the number of residential properties owned by her department in the Lephalale Local Municipality which are vacant?', questions[0]['question'])
