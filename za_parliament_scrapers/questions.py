@@ -63,11 +63,11 @@ class QuestionAnswerScraper(object):
         match = self.DOCUMENT_NAME_REGEX.match(name)
         if not match:
             r'^R(?P<house>[NC])(?:O(?P<president>D?P)?(?P<oral_number>\d+))?(?:W(?P<written_number>\d+))?-+(?P<date_string>\d{6})$'
-            message = (
-                ("Bad document name '%s'. " % name) +
-                "Document name needs to be in the form: 'R<house><O or W><number>-<date>. " + 
-                "The date must either be in the format <last two digits of year><two-digit month><two-digit day>' (e.g. 200104) or " +
-                "<four-digit year>-<two-digit month>-<two-digit day>' (e.g. 2020-01-04). " +
+            message = "Bad document name '%s'. " % name
+            message += (
+                "Document name needs to be in the form: 'R<house><O or W><number>-<date>. "
+                "The date must either be in the format <last two digits of year><two-digit month><two-digit day>' (e.g. 200104) or "
+                "<four-digit year>-<two-digit month>-<two-digit day>' (e.g. 2020-01-04). "
                 "For example, 'RNW1143-131127.docx' or 'RNW190-2020-03-03.docx'."
             )
             raise ValueError(message)
