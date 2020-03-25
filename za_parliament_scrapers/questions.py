@@ -32,8 +32,8 @@ class QuestionAnswerScraper(object):
     QUESTION_RE = re.compile(
         r"""
           (?P<intro>
-            (?:(?P<number1>\d+)\.?\s+)?         # Question number
-            (?P<askedby>[-a-zA-Z\s]+?)          # Name of question asker
+            (?:(?P<number1>\d+)\.?[ \t]?)?      # Question number
+            (?P<askedby>[a-zA-Z]+[-a-zA-Z ]+?)  # Name of question asker
             \s*\((?P<party>[-\w\s]+)\)?
             \s+(?:to\s+ask|asked)\s+the\s+
             (?P<questionto>[-\w\s(),:.]+)[:.]
