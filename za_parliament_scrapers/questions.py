@@ -344,7 +344,7 @@ class QuestionAnswerScraper(object):
                 if self.REPLY_RE.match(p.text):
                     for el in list(p.previous_elements):
                         if isinstance(el, bs4.element.Tag):
-                            el.decompose()
+                            el.extract()
                     p.decompose()
                     break
 
