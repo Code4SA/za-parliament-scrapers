@@ -345,7 +345,7 @@ class QuestionAnswerScraper(object):
                     for el in list(p.previous_elements):
                         if isinstance(el, bs4.element.Tag):
                             el.extract()
-                    p.decompose()
+                    p.extract()
                     break
 
             return str(soup)
