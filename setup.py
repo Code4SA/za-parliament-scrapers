@@ -61,7 +61,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
         'mammoth >= 0.3.19, < 0.3.31',
-        'beautifulsoup4 >= 4.4.0',
+        'beautifulsoup4 >= 4.8.2',
     ],
 
     # List additional groups of dependencies here (e.g. development
