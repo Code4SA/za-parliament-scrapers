@@ -36,7 +36,7 @@ class QuestionAnswerScraper(object):
             (?P<askedby>[a-zA-Z]+[-a-zA-Z ]+?)  # Name of question asker
             \s*\((?P<party>[-\w\s]+)\)?
             \s+(?:to\s+ask|asked)\s+the\s+
-            (?P<questionto>[-\w\s(),:.]+)[:.]
+            (?P<questionto>[-\w\s(),]+?)[:.]
             [-\u2013\w\s(),\[\]/]*?
           )                                     # Intro
           (?P<translated>\u2020)?\s*(</b>|\n)\s*
